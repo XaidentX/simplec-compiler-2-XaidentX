@@ -1,0 +1,10 @@
++-prog
+|  +-decllist(empty)
+|  +-funclist(empty)
+|  +-main
+|  |  +-decllist(empty)
+|  |  +-stmtlist(empty)
+|  |  +-intexpr
+|  |  |  +-0
+|  |  |  +-primitivetype
+|  |  |  |  +-typename_int

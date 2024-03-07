@@ -1,0 +1,44 @@
+swap(a, b) : function(pointer<int>, pointer<int>) -> int {
+  int t;
+  t = *a;
+  *a = *b;
+  *b = t;
+
+  return 0;
+}
+
+partition(arr, low, high) : function(pointer<int>, int, int) -> int {
+  int pivot;
+  int i;
+  int swap_res;
+  char del;
+  int j;
+  j = low;
+  
+  pivot = arr[high];
+
+  i = (low - 1);
+
+  while (j <= high - 1) {
+    if (arr[j] <= pivot) {
+      i = i + 1;
+      swap_res = swap(&arr[i], &arr[j]);
+    }
+    j = j + 1;
+  }
+  swap_res = swap(&arr[i+1], &arr[high]);
+  return (i + 1);
+}
+quickSort(arr, low, high) : function(pointer<int>, int, int) -> int {
+  int pi;
+  int qsres;
+  if (low < high) {
+    pi = partition(arr, low, high);
+    qsres = quickSort(arr, low, pi - 1);
+    qsres = quickSort(arr, pi + 1, high);
+  }
+
+  return 0;
+}
+
+main { return 0; }

@@ -1,0 +1,16 @@
+function(pointer<char>) -> int printf;
+
+int i;
+
+main {
+  int x;
+  x = 10;
+  if (x < 100) {
+    i = printf("10 is less than 100");
+  }
+  if(x > 100){
+    x = 9;
+  }
+
+  return 0;
+}

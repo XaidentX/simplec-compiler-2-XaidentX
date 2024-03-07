@@ -1,0 +1,9 @@
+f() : function() -> int { return 20; }
+
+g(x) : function(int) -> int {
+  int y;
+  y = f();
+  return x - y;
+}
+
+main { return g(10); }

@@ -1,0 +1,16 @@
+main {
+  int garbage;
+  int x;
+  int y;
+  int z;
+  int g;
+  int f;
+  int h;
+  x = 5;
+  y = 20 % x;
+  z = x + y;
+  g = z / 1;
+  f = g * 2;
+  h = 15 - f;
+  return 0;
+}

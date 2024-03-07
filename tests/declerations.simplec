@@ -1,0 +1,10 @@
+
+main {
+  char x;
+  int res;
+  pointer<char> cp;
+  pointer<int> ip;
+  x = 'a';
+  res = 5;
+  return 0;
+}

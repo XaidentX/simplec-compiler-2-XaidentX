@@ -1,0 +1,72 @@
++-prog
+|  +-decllist
+|  |  +-decl
+|  |  |  +-functiontype
+|  |  |  |  +-typelist
+|  |  |  |  |  +-pointertype
+|  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  +-typename_char
+|  |  |  |  |  +-typelist(empty)
+|  |  |  |  +-primitivetype
+|  |  |  |  |  +-typename_int
+|  |  |  +-printf
+|  |  +-decllist(empty)
+|  +-funclist(empty)
+|  +-main
+|  |  +-decllist
+|  |  |  +-decl
+|  |  |  |  +-primitivetype
+|  |  |  |  |  +-typename_int
+|  |  |  |  +-garbage
+|  |  |  +-decllist(empty)
+|  |  +-stmtlist
+|  |  |  +-ifelsestmt
+|  |  |  |  +-intexpr
+|  |  |  |  |  +-0
+|  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  +-typename_int
+|  |  |  |  +-compoundstmt
+|  |  |  |  |  +-decllist(empty)
+|  |  |  |  |  +-stmtlist
+|  |  |  |  |  |  +-assignstmt
+|  |  |  |  |  |  |  +-identexpr
+|  |  |  |  |  |  |  |  +-garbage
+|  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  +-callexpr
+|  |  |  |  |  |  |  |  +-printf
+|  |  |  |  |  |  |  |  +-exprlist
+|  |  |  |  |  |  |  |  |  +-strexpr
+|  |  |  |  |  |  |  |  |  |  +-"shouldn't print"
+|  |  |  |  |  |  |  |  |  |  +-pointertype
+|  |  |  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  |  |  +-typename_char
+|  |  |  |  |  |  |  |  |  +-exprlist(empty)
+|  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  +-stmtlist(empty)
+|  |  |  |  +-compoundstmt
+|  |  |  |  |  +-decllist(empty)
+|  |  |  |  |  +-stmtlist
+|  |  |  |  |  |  +-assignstmt
+|  |  |  |  |  |  |  +-identexpr
+|  |  |  |  |  |  |  |  +-garbage
+|  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  +-callexpr
+|  |  |  |  |  |  |  |  +-printf
+|  |  |  |  |  |  |  |  +-exprlist
+|  |  |  |  |  |  |  |  |  +-strexpr
+|  |  |  |  |  |  |  |  |  |  +-"should print"
+|  |  |  |  |  |  |  |  |  |  +-pointertype
+|  |  |  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  |  |  +-typename_char
+|  |  |  |  |  |  |  |  |  +-exprlist(empty)
+|  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  +-stmtlist(empty)
+|  |  |  +-stmtlist(empty)
+|  |  +-intexpr
+|  |  |  +-0
+|  |  |  +-primitivetype
+|  |  |  |  +-typename_int

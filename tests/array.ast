@@ -1,0 +1,103 @@
++-prog
+|  +-decllist(empty)
+|  +-funclist(empty)
+|  +-main
+|  |  +-decllist
+|  |  |  +-decl
+|  |  |  |  +-primitivetype
+|  |  |  |  |  +-typename_int
+|  |  |  |  +-x
+|  |  |  +-decllist
+|  |  |  |  +-decl
+|  |  |  |  |  +-arraytype
+|  |  |  |  |  |  +-10
+|  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  +-arr
+|  |  |  |  +-decllist(empty)
+|  |  +-stmtlist
+|  |  |  +-assignstmt
+|  |  |  |  +-identexpr
+|  |  |  |  |  +-x
+|  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  +-typename_int
+|  |  |  |  +-intexpr
+|  |  |  |  |  +-10
+|  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  +-typename_int
+|  |  |  +-stmtlist
+|  |  |  |  +-whilestmt
+|  |  |  |  |  +-binaryexpr
+|  |  |  |  |  |  +-identexpr
+|  |  |  |  |  |  |  +-x
+|  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  +-op_gt
+|  |  |  |  |  |  +-intexpr
+|  |  |  |  |  |  |  +-0
+|  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  +-compoundstmt
+|  |  |  |  |  |  +-decllist(empty)
+|  |  |  |  |  |  +-stmtlist
+|  |  |  |  |  |  |  +-assignstmt
+|  |  |  |  |  |  |  |  +-arrayexpr
+|  |  |  |  |  |  |  |  |  +-identexpr
+|  |  |  |  |  |  |  |  |  |  +-arr
+|  |  |  |  |  |  |  |  |  |  +-arraytype
+|  |  |  |  |  |  |  |  |  |  |  +-10
+|  |  |  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  |  |  +-binaryexpr
+|  |  |  |  |  |  |  |  |  |  +-identexpr
+|  |  |  |  |  |  |  |  |  |  |  +-x
+|  |  |  |  |  |  |  |  |  |  +-op_minus
+|  |  |  |  |  |  |  |  |  |  +-intexpr
+|  |  |  |  |  |  |  |  |  |  |  +-1
+|  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  |  +-binaryexpr
+|  |  |  |  |  |  |  |  |  +-intexpr
+|  |  |  |  |  |  |  |  |  |  +-2
+|  |  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  |  |  +-op_times
+|  |  |  |  |  |  |  |  |  +-identexpr
+|  |  |  |  |  |  |  |  |  |  +-x
+|  |  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  +-stmtlist
+|  |  |  |  |  |  |  |  +-assignstmt
+|  |  |  |  |  |  |  |  |  +-identexpr
+|  |  |  |  |  |  |  |  |  |  +-x
+|  |  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  |  |  +-binaryexpr
+|  |  |  |  |  |  |  |  |  |  +-identexpr
+|  |  |  |  |  |  |  |  |  |  |  +-x
+|  |  |  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  |  |  |  +-op_minus
+|  |  |  |  |  |  |  |  |  |  +-intexpr
+|  |  |  |  |  |  |  |  |  |  |  +-1
+|  |  |  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  |  |  |  |  |  +-typename_int
+|  |  |  |  |  |  |  |  +-stmtlist(empty)
+|  |  |  |  +-stmtlist(empty)
+|  |  +-arrayexpr
+|  |  |  +-identexpr
+|  |  |  |  +-arr
+|  |  |  |  +-arraytype
+|  |  |  |  |  +-10
+|  |  |  |  |  +-primitivetype
+|  |  |  |  |  |  +-typename_int
+|  |  |  +-intexpr
+|  |  |  |  +-0
+|  |  |  +-primitivetype
+|  |  |  |  +-typename_int

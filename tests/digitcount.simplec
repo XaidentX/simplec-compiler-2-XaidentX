@@ -1,0 +1,22 @@
+int x;
+
+digitcount(x) : function(int) -> int {
+  int returnVal;
+  if (x < 0) {
+    returnVal = digitcount(x);
+  }
+  if (x >= 0 && x < 10) {
+    returnVal = 1;
+  } else {
+    returnVal = digitcount(x / 10) + 1;
+  }
+
+  return returnVal;
+}
+
+main {
+  int a;
+  int garbage;
+  a = digitcount(12345678);
+  return 0;
+}
