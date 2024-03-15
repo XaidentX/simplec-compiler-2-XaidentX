@@ -67,7 +67,12 @@ static void check_decllist(T_decllist decllist) {
 }
 
 static void check_decl(T_decl decl) {
-  /* todo: given in class */
+  // check for duplicate definitions in local scope
+  if (NULL != lookup(current_scope->table, decl->ident)) {
+    type_error("duplicate declaration of same symbol");
+  }
+  // add the binding
+  insert(current_scope->table, decl->ident, decl->type);
 }
 
 static void check_funclist(T_funclist funclist) {
@@ -78,7 +83,60 @@ static void check_funclist(T_funclist funclist) {
 }
 
 static void check_func(T_func func) {
-  /* todo */
+  
+  // Check that the function is declared with a function type
+  if (E_functiontype != func->type->kind){
+    type_error("function declaration is not a function type");
+  }
+
+  // Check for duplicates
+  if (lookup(current_scope->table, func->ident) != NULL){
+    type_error("there are duplicate function definitions");
+  }
+
+  // Add the function to the current (global) symbol table
+  insert(current_scope->table, func->ident, func->type);
+
+  // Create a new scope
+  current_scope = create_scope(current_scope);
+
+  // Add parameters to local scope
+  T_paramlist params = func->paramlist;
+  T_typelist paramtypes = func->type->functiontype.paramtypes;
+
+  while (params != NULL && paramtypes != NULL){
+
+    insert(current_scope->table, params->ident, paramtypes->type);
+
+    // Move to the next parameter and its type
+    params = params->tail;
+    paramtypes = paramtypes->tail;
+  }
+
+
+  // Check for an incorrect number of parameters (paramlist) compared to the type's list of parameters (paramtypes)
+  if(params != NULL || paramtypes != NULL){
+    type_error("number of parameters do not match");
+  }
+
+  // Add the local variable declarations to the local symtab
+  check_decllist(func->decllist);
+
+  // Check the function body for type errors
+  check_stmtlist(func->stmtlist);
+
+  // Check the return expression for type errors
+  check_expr(func->returnexpr);
+
+  // Check that the return expression's type match the function type
+  if(!compare_types(func->returnexpr->type, func->type->functiontype.returntype)){
+    type_error("return expression type did not match with the function type");
+  }
+
+  // Restore the parent scope
+  T_scope parent_scope = current_scope->parent;
+  destroy_scope(current_scope);
+  current_scope = parent_scope;
 }
 
 // GIVEN
@@ -172,15 +230,51 @@ static void check_ifstmt(T_stmt stmt) {
 }
 
 static void check_ifelsestmt(T_stmt stmt) {
-  /* todo */
+
+  // Check the condition expression
+  check_expr(stmt->ifelsestmt.cond);
+
+  // Check the condition is an int
+  if(!compare_types(stmt->ifelsestmt.cond->type, INTTYPE)){
+    type_error("if-else condition must be an int");
+  }
+
+  // Recursively check the if branch
+  check_stmt(stmt->ifelsestmt.ifbranch);
+
+  // Recursively check the else branch, if present
+  if(stmt->ifelsestmt.elsebranch != NULL){
+    check_stmt(stmt->ifelsestmt.elsebranch);
+  }
 }
 
 static void check_whilestmt(T_stmt stmt) {
-  /* todo */
+  
+  // Check the condition expression
+  check_expr(stmt->whilestmt.cond);
+
+  // Check that the condition is an int
+  if(!compare_types(stmt->whilestmt.cond->type, INTTYPE)){
+    type_error("while condition must be an int");
+  }
+
+  // Recursively check the while loop body
+    check_stmt(stmt->whilestmt.body);
 }
 
 static void check_compoundstmt(T_stmt stmt) {
-  /* todo */
+  
+  // Create a new scope
+  T_scope parent_scope = current_scope;
+  current_scope = create_scope(parent_scope);
+
+  // Typecheck the body
+  check_stmtlist(stmt->compoundstmt.stmtlist);
+
+  // Restore the parent scope
+  destroy_scope(current_scope);
+  current_scope = parent_scope;
+
 }
 
 /* expressions */
@@ -204,39 +298,202 @@ static void check_expr(T_expr expr) {
 }
 
 static void check_identexpr(T_expr expr) {
-  /* todo: given in class */
+  fprintf(stderr, "check_identexpr\n");
+  // lookup the symbol
+  T_type binding = lookup_in_all_scopes(current_scope, expr->identexpr);
+  // check that the symbol has been declared
+  if (NULL == binding) {
+    type_error("use of undeclared symbol in identexpr");
+  }
+  // check that the symbol is not a function type
+  if (E_functiontype == binding->kind) {
+    type_error("cannot use a function as a value");
+  }
+  // set the type to the binding from the symtab
+  expr->type = binding;
 }
 
 static void check_callexpr(T_expr expr) {
-  /* todo */
+
+  // Get the type from the symtab or call to undeclared function type error
+  T_type binding = lookup_in_all_scopes(current_scope, expr->callexpr.ident);
+
+  // Check that the symbol is a function type
+  if(binding == NULL || binding->kind != E_functiontype){
+    type_error("The symbol is not a function type");
+  }
+
+    T_exprlist args = expr->callexpr.args;
+    T_typelist paramtypes = binding->functiontype.paramtypes;
+
+    while(args != NULL && paramtypes != NULL){
+
+      // Typecheck the arguments
+      check_expr(args->expr);
+
+      //Compare the types of each argument's expression (in the list)
+      if(!compare_types(args->expr->type, paramtypes->type)){
+        type_error("Argument type does not match parameter type");
+      }
+
+      args = args->tail;
+      paramtypes = paramtypes->tail;
+    }
+
+    // Check that the number of types match
+    if(args != NULL || paramtypes != NULL){
+      type_error("The number of types do not match");
+    }
+
+    // Set this expression to the function's return type
+    expr->type = binding->functiontype.returntype;
 }
 
 static void check_intexpr(T_expr expr) {
-  /* todo: given in class */
+  fprintf(stderr, "check_intexpr\n");
+  // integer constants are int type by definition
+  expr->type = INTTYPE;
 }
 
 static void check_charexpr(T_expr expr) {
-  /* todo */
+  fprintf(stderr, "check_charexpr\n");
+    expr->type = CHARTYPE;
 }
 
 static void check_strexpr(T_expr expr) {
-  /* todo */
+  fprintf(stderr, "check_strexpr\n");
+    expr->type = STRINGTYPE;
 }
 
 static void check_arrayexpr(T_expr expr) {
-  /* todo */
+
+  // Check the type of the expression and the index
+  check_expr(expr->arrayexpr.expr);
+  check_expr(expr->arrayexpr.index);
+
+  // A dereference unboxes the pointer type
+  if(expr->arrayexpr.expr->type->kind == E_pointertype){
+    expr->type = expr->arrayexpr.expr->type->pointertype;
+  }
+  // An array access unboxes the array type
+  else if (expr->arrayexpr.expr->type->kind == E_arraytype){
+    expr->type = expr->arrayexpr.expr->type->arraytype.type;
+  }
+  // It's a type error if the expression is neither an array or pointer
+  else{
+    type_error("expression is neither an array or pointer");
+  }
+
+
 }
 
 static void check_unaryexpr(T_expr expr) {
-  /* todo */
+  
+  // Typecheck the operand
+  check_expr(expr->unaryexpr.expr);
+
+  // Check the type of the operator
+  switch(expr->unaryexpr.op){
+
+    case E_op_ref:
+    
+    if(expr->unaryexpr.expr->type->kind != E_pointertype){
+      type_error("& operator can only be applied to a pointer type");
+    }
+
+    // gets the pointer to a variable of a given type
+    expr->type = create_pointertype(expr->unaryexpr.expr->type->pointertype);
+    break;
+
+    case E_op_deref:
+
+    if(expr->unaryexpr.expr->type->kind != E_pointertype){
+      type_error("* operator can only be applied to a pointer type");
+    }
+
+    // dereferences the pointer to a variable of a given type
+    expr->type = expr->unaryexpr.expr->type->pointertype;
+    break;
+
+    case E_op_minus:
+
+    if(!compare_types(expr->unaryexpr.expr->type, INTTYPE)){
+      type_error("- operator can only be applied to an int type");
+    }
+
+    // arithmetic negation
+    expr->type = INTTYPE;
+    break;
+
+    case E_op_not:
+
+    if(!compare_types(expr->unaryexpr.expr->type, INTTYPE)){
+      type_error("! operator can only be applied to an int type");
+    }
+
+    // logical negation
+    expr->type = INTTYPE;
+    break;
+
+    default:
+    type_error("Unexpected unary operator");
+
+  }
 }
 
 static void check_binaryexpr(T_expr expr) {
-  /* todo */
+  
+  // First typecheck the operands
+  check_expr(expr->binaryexpr.left);
+  check_expr(expr->binaryexpr.right);
+
+  // Check the type of the operator
+  if (expr->binaryexpr.op == E_op_times || expr->binaryexpr.op == E_op_divide || expr->binaryexpr.op == E_op_mod || expr->binaryexpr.op == E_op_plus || expr->binaryexpr.op == E_op_minus){
+
+    // arithmetic: allows any operands of the same type and returns the same type
+    if(!compare_types(expr->binaryexpr.left->type, expr->binaryexpr.right->type) || (expr->binaryexpr.left->type->kind != E_primitivetype) || (expr->binaryexpr.right->type->kind != E_primitivetype)){
+      type_error("Arithmetic operators must have operands of the same type (int or char)");
+    }
+
+    expr->type = expr->binaryexpr.left->type;
+
+  }
+  // Check the type of the operator
+  else if(expr->binaryexpr.op == E_op_lt || expr->binaryexpr.op == E_op_gt || expr->binaryexpr.op == E_op_le || expr->binaryexpr.op == E_op_ge || expr->binaryexpr.op == E_op_eq || expr->binaryexpr.op == E_op_ne){
+
+    // comparison operators: takes either char or int, but not both, and returns an int to represent a boolean value
+    if((expr->binaryexpr.left->type->kind != E_primitivetype) || (expr->binaryexpr.right->type->kind != E_primitivetype) || (expr->binaryexpr.left->type->primitivetype != expr->binaryexpr.right->type->primitivetype)){
+      type_error("Comparison operators must have operands of the same type (int or char)");
+    }
+
+    expr->type = INTTYPE;
+
+  }
+
+  // Check the type of the operator
+  else if(expr->binaryexpr.op == E_op_and || expr->binaryexpr.op == E_op_or){
+
+    // logical operators: takes int and returns an int to represent a boolean value
+    if(!compare_types(expr->binaryexpr.left->type, INTTYPE) || !compare_types(expr->binaryexpr.right->type, INTTYPE)){
+      type_error("Logical operators must have operands of type int");
+    }
+
+    expr->type = INTTYPE;
+  }
 }
 
+
 static void check_castexpr(T_expr expr) {
-  /* todo */
+  
+  // Typecheck the expression
+  check_expr(expr->castexpr.expr);
+
+  // Generate a type error if it's a function type.
+  if(expr->castexpr.expr->kind == E_functiontype){
+    type_error("Cannot cast from or to a function type");
+  }
+
+  expr->type = expr->castexpr.type;
 }
 
 /* type error */
